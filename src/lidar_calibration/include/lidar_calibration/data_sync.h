@@ -41,7 +41,7 @@ public:
     void TransformAndCombinePointCloud(const sensor_msgs::PointCloud2::ConstPtr &msg1,
                                        const sensor_msgs::PointCloud2::ConstPtr &msg2,
                                        sensor_msgs::PointCloud2::Ptr &output);
-    virtual void Publish(const sensor_msgs::PointCloud2::ConstPtr &msg);
+    void Publish(const sensor_msgs::PointCloud2::ConstPtr &msg);
 
 private:
     ros::NodeHandle nh_;
