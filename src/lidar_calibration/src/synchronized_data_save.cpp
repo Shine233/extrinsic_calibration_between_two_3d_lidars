@@ -11,7 +11,7 @@
 
 
 using namespace std;
-string SaveDir="/home/yao/Workspace/extrinsic_calibration_between_two_3d_lidars/Data";
+string SaveDir="/home/yao/Workspace/Livox_automatic_calibration/data";
 
 std::string itos(int i)
 {
@@ -23,12 +23,12 @@ std::string itos(int i)
 PointCloudRecord::PointCloudRecord()
 {
     cout<<"Start record pointclouds of 2 Lidar"<<endl;
-    cloud1_ = new pcl::PointCloud<pcl::PointXYZ>;
-    cloud2_ = new pcl::PointCloud<pcl::PointXYZ>;
+    cloud1_ = new pcl::PointCloud<pcl::PointXYZI>;
+    cloud2_ = new pcl::PointCloud<pcl::PointXYZI>;
     count_ = 0;
 
-    lidar_sub1_.subscribe(nh_, "/livox/data1", 1);
-    lidar_sub2_.subscribe(nh_, "/livox/data2", 1);
+    lidar_sub1_.subscribe(nh_, "/livox/lidar_47MDJ790010062", 1);
+    lidar_sub2_.subscribe(nh_, "/livox/lidar_47MDJ790010103", 1);
     sync_ = new message_filters::Synchronizer<syncPolicy>(syncPolicy(10), lidar_sub1_, lidar_sub1_);
     sync_->registerCallback(boost::bind(&PointCloudRecord::LivoxDataCallback, this, _1, _2));
 }
@@ -44,8 +44,8 @@ void PointCloudRecord::LivoxDataCallback(const sensor_msgs::PointCloud2::ConstPt
     pcl::fromROSMsg(*msg1, *cloud1_);
     pcl::fromROSMsg(*msg2, *cloud2_);
 
-    pcl::io::savePCDFileASCII(SaveDir + "/Lidar1/pointcloud" + itos(count_) + ".pcd", *cloud1_);
-    pcl::io::savePCDFileASCII(SaveDir + "/Lidar2/pointcloud" + itos(count_) + ".pcd", *cloud2_);
+    pcl::io::savePCDFileASCII(SaveDir + "/Base_LiDAR_Frames/" + itos(100000+count_) + ".pcd", *cloud1_);
+    pcl::io::savePCDFileASCII(SaveDir + "/Target-LiDAR-Frames/" + itos(100000+count_) + ".pcd", *cloud2_);
 
     count_++;
 }

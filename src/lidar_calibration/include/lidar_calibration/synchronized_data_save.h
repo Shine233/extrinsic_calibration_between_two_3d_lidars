@@ -30,8 +30,8 @@ private:
     message_filters::Subscriber<sensor_msgs::PointCloud2> lidar_sub1_;
     message_filters::Subscriber<sensor_msgs::PointCloud2> lidar_sub2_;
     message_filters::Synchronizer<syncPolicy> *sync_;
-    pcl::PointCloud<pcl::PointXYZ> *cloud1_;
-    pcl::PointCloud<pcl::PointXYZ> *cloud2_;
+    pcl::PointCloud<pcl::PointXYZI> *cloud1_;
+    pcl::PointCloud<pcl::PointXYZI> *cloud2_;
     int count_;
 };
 

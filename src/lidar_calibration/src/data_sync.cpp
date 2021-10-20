@@ -9,8 +9,8 @@ using namespace std;
 DataSync::DataSync()
 {
     associated_data_pub_ = nh_.advertise<sensor_msgs::PointCloud2> ("/livox/associated",1);
-    lidar_sub1_.subscribe(nh_, "/livox/data1", 1);
-    lidar_sub2_.subscribe(nh_, "/livox/data2", 1);
+    lidar_sub1_.subscribe(nh_, "/livox/lidar_47MDJ790010062", 1);
+    lidar_sub2_.subscribe(nh_, "/livox/lidar_47MDJ790010103", 1);
     sync_ = new message_filters::Synchronizer<syncPolicy>(syncPolicy(10), lidar_sub1_, lidar_sub1_);
     sync_->registerCallback(boost::bind(&DataSync::LivoxDataCallback, this, _1, _2));
 
@@ -70,19 +70,19 @@ void DataSync::TransformAndCombinePointCloud(const sensor_msgs::PointCloud2::Con
                                              sensor_msgs::PointCloud2::Ptr &output)
 {
     // do transform
-    pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_msg1(new pcl::PointCloud<pcl::PointXYZ>), pcl_msg2(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZI>::Ptr pcl_msg1(new pcl::PointCloud<pcl::PointXYZI>), pcl_msg2(new pcl::PointCloud<pcl::PointXYZI>);
     pcl::fromROSMsg(*msg1, *pcl_msg1);
     pcl::fromROSMsg(*msg2, *pcl_msg2);
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr transformed_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZI>::Ptr transformed_cloud(new pcl::PointCloud<pcl::PointXYZI>);
     pcl::transformPointCloud(*pcl_msg2, *transformed_cloud, transform_matrix_);
 
     // combine point cloud data
-    pcl::PointCloud<pcl::PointXYZ>::Ptr associatged_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZI>::Ptr associatged_cloud(new pcl::PointCloud<pcl::PointXYZI>);
     *associatged_cloud = *transformed_cloud + *pcl_msg1;
 
     pcl::toROSMsg(*associatged_cloud, *output);
-    output->header.frame_id = "map";
+//    output->header.frame_id = "map";
 
     // viewer
     /*printf(  "\nPoint cloud colors :  white  = original point cloud\n"
